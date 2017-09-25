@@ -1,4 +1,7 @@
 <?php
+	require("../../../config.php")
+	echo $serverHost;
+	
 	$signupFirstName = "";
 	$signupFamilyName = "";
 	$signupEmail = "";
