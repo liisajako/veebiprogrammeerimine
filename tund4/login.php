@@ -1,5 +1,5 @@
 <?php
-	require("../../../config.php")
+	require("../../../config.php");
 	echo $serverHost;
 	
 	$signupFirstName = "";
@@ -106,6 +106,28 @@
 	//uue kasutaja andmebaasi kirjutamine, kui kõik on olemas
 	if (empty($signupFirstNameError) and empty($signupFamilyNameError) and empty($signupBirthDayError) and empty($signupGenderError) and empty($signupPasswordError)) {
 		echo "Hakkan salvestama!";
+		//krüpteerin parooli
+		$signupPassword = hash("sha512", $_POST["signupPassword"]);
+		
+		//loome andmebaasi ühenduse
+		$database = "if17_jakoliis";
+		$mysqli = new mysqli ($serverHost, $serverUsername, $serverPassword, $database);
+		
+		//valmistame ette käsu andmebaasiserverile
+		$stmt = $mysqli->prepare("INSERT INTO vpusers (firstname, lastname, birthday, gender, email, password) VALUES(?, ?, ?, ?, ?, ?)");
+		echo $mysqli->error;
+		//s - string
+		//i - integer
+		//d - decimal
+		$stmt->bind_param("sssiss", $signupFirstName, $signupFamilyName, $signupBirthDate, $gender, $signupEmail, $signupPassword);
+		//$stmt->execute();
+		if ($stmt->execute()) {
+			echo "\n Õnnestus!";
+		} else {
+			echo "\n Tekkis viga : " .$stmt->error;
+		}
+ 		$stmt->close();
+		$mysqli->close();
 		
 	}
 	
